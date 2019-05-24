@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { take } from 'rxjs/operators';
+import { take, switchMap } from 'rxjs/operators';
 
 import { AuthData } from '../models/auth-data.model';
 import { TrainingService } from '../training/training.service';
 import { UiService } from '../services/ui.service';
 import { Store } from '@ngrx/store';
-import * as fromApp from '../reducers/app.reducer';
 import * as Ui from '../actions/ui.actions';
 import * as Auth from '../actions/auth.actions';
 import * as fromTraining from '../reducers/training.reducer';
 import { User } from '../models/user.model';
+import { empty } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -29,21 +29,17 @@ export class AuthService {
     ) {}
 
     initAuthListener() {
-        this.fauth.authState.subscribe(user => {// Background observable to authenticate automatically
-            if (user) {
-                const { email, emailVerified, uid } = user;
-                if (emailVerified) {
-                    this.fstore.collection('users').doc(`${uid}`).valueChanges().pipe(take(1)).subscribe((userInfo: User) => {
-                        const { weight, birthdate } = userInfo;
-                        this.store.dispatch(new Auth.SetAuthenticated({ email, uid, weight, birthdate, emailVerified }));
-                        this.router.navigate(['/training']);
-                    });
+        const authState = this.fauth.authState.pipe(
+            switchMap((user: firebase.User) => {
+                if (user != null) {
+                    return this.fstore.collection('users').doc(`${user.uid}`).valueChanges();
                 }
-            } else {
-                this.trainingService.cancelSubscriptions();
-                this.store.dispatch(new Auth.UnsetAuthenticated());
-                this.router.navigate(['/']);
-            }
+                return empty();
+            }),
+        ).subscribe((userInfo: User) => {
+                const { email, uid, weight, birthdate, emailVerified } = userInfo;
+                this.store.dispatch(new Auth.SetAuthenticated({ email, uid, weight, birthdate, emailVerified }));
+                this.router.navigate(['/training']);
         });
     }
 
@@ -81,6 +77,7 @@ export class AuthService {
         try {
             const result = await this.fauth.auth.signInWithEmailAndPassword(authData.email, authData.password);
             if (!result.user.emailVerified) {
+                this.store.dispatch(new Ui.StopLoading());
                 let refSnackBar = this.uiService
                     .showSnackBar('Please verify your e-mail address', 'Resend', 8000);
                 const snackBarSub = refSnackBar.onAction().subscribe(async () => {
@@ -104,10 +101,11 @@ export class AuthService {
                             this.fstore.collection('users').doc(`${result.user.uid}`)
                                 .set({ email, uid, birthdate, emailVerified, weight });
                         }
+                        // We do not stop loading here, that is a task of training.service
+                        // fetchExercises
                         this.router.navigate(['/training']);
                 });
             }
-            this.store.dispatch(new Ui.StopLoading());
         } catch (err) {
             const refSnackBar = this.uiService.showSnackBar(err.message, 'Dismiss', 4000);
             const snackBarSub = refSnackBar.onAction().subscribe(() => {
@@ -121,8 +119,10 @@ export class AuthService {
     async logout() {
         try {
             this.trainingService.stopExercise(0);
+            this.trainingService.cancelSubscriptions();
             await this.fauth.auth.signOut();
             this.store.dispatch(new Auth.UnsetAuthenticated());
+            this.router.navigate(['/']);
         } catch (err) {
             const refSnackBar = this.uiService.showSnackBar(err.message, 'Dismiss', 4000);
             const snackBarSub = refSnackBar.onAction().subscribe(() => {
