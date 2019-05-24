@@ -1,0 +1,22 @@
+@import '../../global.variables.scss';
+
+table {
+    width: 100%;
+}
+
+#top-fields-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1.9rem;
+}
+
+.extra-field {
+    width: 50%;
+}
+
+@media (max-width: $small-screen-end) {
+    .extra-field {
+        width: 95%;
+    }
+}

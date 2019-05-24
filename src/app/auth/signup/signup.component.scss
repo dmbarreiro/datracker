@@ -1,0 +1,34 @@
+section {
+    padding-top: 1.9rem;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.mass {
+    display: flex;
+    flex-direction: row;
+}
+
+// children selector, apply styles to children but not grandchildren
+// .signup-form * applies styles to all descendants
+.signup-form > * {
+    margin-bottom: 1rem;
+}
+
+mat-form-field.fullwidth {
+    width: 19rem;
+}
+
+mat-form-field.onethird {
+    width: 6rem;
+}
+
+mat-form-field.twothirds {
+    width: 12rem;
+    padding-right: 1rem;
+}

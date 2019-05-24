@@ -1,0 +1,10 @@
+<section class="current-training">
+  <mat-progress-spinner mode="determinate" [value]="trainingProgress"></mat-progress-spinner>
+  <h1 class="percentage">{{ trainingProgress }}%</h1>
+  <div class="repetitions-container">
+      <p>Repetitions Left:</p>
+      <h1>{{ repetition }}</h1>
+  </div>
+  <p>{{ (exercise$ | async).name }}</p>
+  <button mat-raised-button color="warn" (click)="onCancel()">Cancel</button>
+</section>

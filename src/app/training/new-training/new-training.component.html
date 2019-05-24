@@ -1,0 +1,32 @@
+<section class="new-training">
+  <mat-card>
+    <mat-card-title>Choose Your Training</mat-card-title>
+    <mat-card-content>
+      <mat-form-field *ngIf="!(isLoading$ | async) && (exercises$ | async)">
+        <mat-select placeholder="Desired training" #tagtraining>
+          <mat-option [value]="exercise.id" *ngFor="let exercise of (exercises$ | async)">
+            {{ exercise.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-spinner *ngIf="isLoading$ | async" diameter="48"></mat-spinner>
+    </mat-card-content>
+    <mat-card-actions *ngIf="!(isLoading$ | async)">
+      <button 
+      type="submit" 
+      mat-button
+      (click)="onStartTraining(training.value)"
+      [disabled]="training ? ( training.value ? false : true ) : true"
+      *ngIf="exercises$ | async">
+        Start
+      </button>
+      <button
+      type="button"
+      mat-button
+      *ngIf="!(exercises$ | async)"
+      (click)="fetchExercises()">
+        Reload exercises
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</section>

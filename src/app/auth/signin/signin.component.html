@@ -1,0 +1,17 @@
+<section>
+  <form class="signin-form" [formGroup]="signinForm" (ngSubmit)="onSignin()">
+    <mat-form-field>
+      <input type="email" matInput placeholder="Your e-mail" formControlName="email">
+      <mat-error>Invalid or missing e-mail.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input type="password" matInput placeholder="Your password" formControlName="password">
+        <mat-hint>Passwords should have at least 6 characters.</mat-hint>
+        <mat-error>Password must not be empty.</mat-error>
+    </mat-form-field>
+    <button type="submit" mat-raised-button color="primary" [disabled]="!signinForm.valid" *ngIf="!(isLoading$ | async)">
+      Submit
+    </button>
+    <mat-spinner diameter="24" *ngIf="isLoading$ | async"></mat-spinner>
+  </form>
+</section>

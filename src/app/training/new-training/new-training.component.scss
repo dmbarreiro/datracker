@@ -1,0 +1,28 @@
+@import '../../global.variables.scss';
+
+.new-training {
+    display: flex;
+    justify-content: center;
+    padding-top: 1.9rem;
+}
+
+mat-card {
+    width: $small-screen-end - 200px;
+}
+
+@media (max-width: $small-screen-end) {
+    mat-card {
+        width: 100%;
+    }
+}
+
+// mat-card > * {
+//     text-align: center;
+// }
+
+mat-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,24 @@
+.current-training {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1.9rem;
+}
+
+.percentage {
+    position: absolute;
+    top: 93px;
+}
+
+.repetitions-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+    & > * {
+        padding: 0;
+        margin: 0;
+    }
+}

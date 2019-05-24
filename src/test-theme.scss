@@ -1,0 +1,19 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$candy-app-primary: mat-palette($mat-light-blue);
+// We can add values specifying default, light and dark palette color values
+// the default values are A500, A100 and A700 respectively. As we can see here
+// we can define only one or two values, the order gives meaning to the values
+// default always 1st, light 2nd, dark 3rd.
+$candy-app-accent:  mat-palette($mat-orange, A200);
+
+// The warn palette is optional (defaults to red).
+$candy-app-warn:    mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+// mat-light/dark-theme defines foreground and background colors, both are complementary.
+$candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
+
+@include angular-material-theme($candy-app-theme);

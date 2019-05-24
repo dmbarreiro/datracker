@@ -1,0 +1,23 @@
+<mat-toolbar color="primary" role="heading">
+  <!-- 
+      mat-toolbar uses flexbox internally, that's why the divs, which
+      are block level elements (they should appear one beneath each other),
+      are shown next to each other.
+    -->
+  <div class="menu-hamburguer-container">
+      <button mat-icon-button (click)="onSidenavToggle()">
+          <mat-icon>menu</mat-icon>
+      </button>
+  </div>
+  <div class="logo-container">
+    <a routerLink="/"><mat-icon aria-hidden="true">favorite_border</mat-icon>DaTracker</a>
+  </div>
+  <div class="menu-links-container">
+      <ul>
+          <li *ngIf="!(isAuth$ | async)"><a routerLink="/signup">Sign Up</a></li>
+          <li *ngIf="!(isAuth$ | async)"><a routerLink="/signin">Sign In</a></li>
+          <li *ngIf="(isAuth$ | async)"><a routerLink="/training">Training</a></li>
+          <li *ngIf="(isAuth$ | async)"><a style="cursor: pointer" (click)="onLogout()">Logout</a></li>
+      </ul>  
+  </div>
+</mat-toolbar>
