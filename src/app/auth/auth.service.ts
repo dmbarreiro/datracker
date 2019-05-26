@@ -102,7 +102,7 @@ export class AuthService {
                         this.store.dispatch(new Auth.SetAuthenticated({ email, uid, weight, birthdate, emailVerified }));
                         if (!emailVerified) {
                             this.fstore.collection('users').doc(`${result.user.uid}`)
-                                .set({ email, uid, birthdate, emailVerified, weight });
+                                .set({ email, uid, birthdate, emailVerified: true, weight });
                         }
                         this.router.navigate(['/training']);
                 });
